@@ -6,10 +6,9 @@ import glob
 from scipy.signal import savgol_filter
 import logging
 from matplotlib.collections import LineCollection
-import argparse
 
 # Logging configuration
-logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
+logging.basicConfig(level=logging.WARNING, format='%(levelname)s - %(message)s')
 
 def get_args():
     """Parse command line arguments for resistograph data visualization.
@@ -220,7 +219,7 @@ def main():
     """ Main function to visualize resistograph data on a tomogram.
     It reads the resistograph data and nodes, processes the data, and plots it.
     """
-    args = get_args()
+
     data_dir = "data/"
     settings_filter = {
         'window_length': 201,
