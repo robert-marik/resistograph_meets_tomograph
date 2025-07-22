@@ -34,7 +34,7 @@ def get_args():
 
     # Ostatní
     parser.add_argument("--data_dir", type=str, default="data/")
-    parser.add_argument("--meter_length", type=int, default=250)
+    parser.add_argument("--scale_length", type=int, default=250)
 
     return parser.parse_args()
 
@@ -117,7 +117,7 @@ def read_resistograph_data(data_dir, upper_limit=0, window_length=201, polyorder
 
 # === Plotting Functions ===
 
-def add_resistograph_data(df, nodes, ax, cax, min=100, max=200, step=300, linewidth=20, cmap='gray', meter_length=250):
+def add_resistograph_data(df, nodes, ax, cax, min=100, max=200, step=300, linewidth=20, cmap='gray', scale_length=250):
     """ Add resistograph data to the plot.
 
     Parameters:
@@ -168,8 +168,8 @@ def add_resistograph_data(df, nodes, ax, cax, min=100, max=200, step=300, linewi
         lc.set_array(values[::step])
         ax.add_collection(lc)
 
-        # Meter visualization
-        tick_positions = np.arange(meter_length + 1, step=50) / 1000
+        # Scale visualization
+        tick_positions = np.arange(scale_length + 1, step=50) / 1000
         xred = tick_positions * direction['x'] + drill_pos['x']
         yred = tick_positions * direction['y'] + drill_pos['y']
 
@@ -185,13 +185,13 @@ def add_resistograph_data(df, nodes, ax, cax, min=100, max=200, step=300, linewi
     plt.colorbar(sm, cax=cax)
     return ax
 
-def add_scale(ax, meter_length=250):
+def add_scale(ax):
     """ Add a scale to the left of the plot.
     Parameters:
     ----------
     ax : matplotlib.axes.Axes
         Axes object to add the scale to.
-    meter_length : int
+    scale_length : int
         The length of the scale in mm (default is 250mm).
 
     Returns:
@@ -233,15 +233,15 @@ def main():
         'linewidth': 20,
         'cmap': 'gray'
     }
-    meter_length = 250
+    scale_length = 250
 
     fig, [ax, cax] = plt.subplots(1, 2, figsize=(8, 6), gridspec_kw={'width_ratios': [40, 1]})
     resistograph_df = read_resistograph_data(data_dir, **settings_filter)
     nodes_df = read_nodes(data_dir)
 
     ax.plot(nodes_df['x'], nodes_df['y'], 'o')
-    add_resistograph_data(resistograph_df, nodes_df, ax, cax, meter_length=meter_length, **settings_plot)
-    add_scale(ax, meter_length)
+    add_resistograph_data(resistograph_df, nodes_df, ax, cax, scale_length=scale_length, **settings_plot)
+    add_scale(ax)
 
     ax.set_aspect(1)
     plt.tight_layout()
