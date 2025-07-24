@@ -1,4 +1,4 @@
-# Resistograph data processing tools
+# Resistograph data processing toolkit
 
 Python scripts to process data from resistograph and use together with tomogram. 
 Descripbed in the paper from the Proceedings of the 7-th International Conference “WOOD TECHNOLOGY &amp; PRODUCT DESIGN” in Ohrid.
