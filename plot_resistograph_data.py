@@ -1,4 +1,36 @@
 #%%
+"""
+This script visualizes resistograph data on a tomogram. It processes resistograph data files 
+and node coordinates to generate a plot with resistograph data overlaid on a tomographic 
+representation. The script includes functions for data loading, processing, and visualization.
+Modules:
+--------
+- pandas: For data manipulation and analysis.
+- numpy: For numerical operations.
+- matplotlib.pyplot: For plotting.
+- glob: For file path pattern matching.
+- scipy.signal.savgol_filter: For smoothing data using the Savitzky-Golay filter.
+- logging: For logging messages during execution.
+- matplotlib.collections.LineCollection: For creating line collections in the plot.
+Functions:
+- get_args(): Parses command-line arguments for resistograph data visualization.
+- read_nodes(data_dir): Reads and centers node coordinates from a CSV file.
+- read_resistograph_file(filepath): Reads a resistograph data file and extracts the data section.
+- read_resistograph_data(data_dir, upper_limit, window_length, polyorder): Reads and processes resistograph data from files in a directory.
+- add_resistograph_data(df, nodes, ax, cax, min, max, step, linewidth, cmap, scale_length): Adds resistograph data to the plot.
+- add_scale(ax): Adds a scale to the left of the plot.
+- main(): Main function to visualize resistograph data on a tomogram.
+Usage:
+------
+Run the script to visualize resistograph data. The script reads data from the specified directory, 
+processes it, and generates a plot with resistograph data overlaid on a tomogram. The visualization 
+parameters can be adjusted using command-line arguments or by modifying the default settings in the script.
+Example:
+--------
+To run the script with default settings:
+    python plot_resistograph_data.py
+"""
+#%%
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt

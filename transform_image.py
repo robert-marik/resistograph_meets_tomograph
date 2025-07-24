@@ -1,3 +1,16 @@
+"""
+Author:
+Robert Mařík and Valentino Cristini
+
+The file provides a function to apply an affine transformation to draw a bitmap image on a matplotlib axis. 
+The transformation aligns two specific source points in the image with corresponding target points, 
+allowing for rotation, scaling, and translation.
+Functions:
+transform_image(overlay, ax, A_img, B_img, A_target, B_target, alpha=1, zorder=500, plot_image=True)
+    Applies an affine transformation to align an image with specified target points and optionally 
+    plots the transformed image on a matplotlib axis.
+"""
+
 import numpy as np
 from matplotlib.transforms import Affine2D
  
