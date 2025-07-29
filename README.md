@@ -5,6 +5,11 @@ Described in the paper from the Proceedings of the 7-th International Conference
 
 For interactive example see the <https://robert-marik.github.io/resistograph_meets_tomograph/>
 
+# Content
+
+* `demo.ipynb` The jupyter notebook which shows the visualization of the resistograph data in both cross-section geometry and in a classical format. Also includes a demo how to merge the output with tomogram produces by the Fakopp software.
+* `plot_resistograph_data.py` The library to visualize resistograph data in a cross-section geometry. Can be used as a library as well as a standalone script.
+* `transform_image.py` The file which allows to put PNG image as a background of the matplotlib axis object.
 
 # Licence 
 
