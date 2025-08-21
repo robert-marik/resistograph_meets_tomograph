@@ -1,3 +1,8 @@
+# This file is part of the resistograph_meets_tomograph project.
+# © 2025 Robert Mařík, Valentino Cristini
+# Licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0)
+# See LICENSE file or https://creativecommons.org/licenses/by/4.0/
+
 """
 Author:
 Robert Mařík and Valentino Cristini
@@ -8,7 +13,7 @@ allowing for rotation, scaling, and translation.
 Functions:
 transform_image(overlay, ax, A_img, B_img, A_target, B_target, alpha=1, zorder=500, plot_image=True)
     Applies an affine transformation to align an image with specified target points and optionally 
-    plots the transformed image on a matplotlib axis.
+    plots the transformed image on a matplotlib axis.    
 """
 
 import numpy as np

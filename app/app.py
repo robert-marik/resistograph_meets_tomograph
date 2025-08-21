@@ -1,7 +1,7 @@
 """
 This is a streamlit application for visualizing resistograph data from a ZIP archive.
 
-It allows users to upload a ZIP file containing resistograph data and nodes, and visualize the data
+It allows users to upload a ZIP file containing resistograph data and nodes, and visualize the data with custom settings.
 
 Instructions to run the code:
 
@@ -19,7 +19,10 @@ Instructions to use the app:
 
 1. Upload a ZIP file containing resistograph data and nodes.
 2. Adjust the filter and visualization settings in the sidebar.
-3. View the generated plots.
+3. Select which columns you want to display using `st.pills`.
+4. Enable/disable scale and graph options.
+5. Choose between SVG and PNG output.
+6. View and download the generated plots.
 
 """
 
@@ -29,14 +32,24 @@ import tempfile
 import shutil
 import os
 import matplotlib.pyplot as plt
+import io
+import streamlit.components.v1 as components
 
 import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from plot_resistograph_data import read_resistograph_data, read_nodes, add_resistograph_data, add_scale
+from plot_resistograph_data import (
+    read_resistograph_data,
+    read_nodes,
+    add_resistograph_data,
+    add_resistograph_graphs,
+    add_scale,
+    add_all_scales_along_path
+)
 
 st.title("Resistograph Data Visualization")
+
 def sidebar_settings():
     st.sidebar.header("Nastavení filtru")
     window_length = st.sidebar.number_input("Window length", min_value=3, value=201, step=2)
@@ -50,7 +63,21 @@ def sidebar_settings():
     linewidth = st.sidebar.number_input("Line width", value=20, step=1)
     cmap = st.sidebar.selectbox("Colormap", ["gray", "viridis", "plasma", "inferno", "magma", "cividis"])
     scale_length = st.sidebar.number_input("Scale length (mm)", value=250, step=10)
-    return window_length, polyorder, upper_limit, min_val, max_val, step, linewidth, cmap, scale_length
+
+    st.sidebar.header("Volby")
+    show_scale = st.sidebar.checkbox("Zobrazit boční měřítko", value=True)
+    show_graphs = st.sidebar.checkbox("Zobrazit grafy podél dráhy", value=True)
+
+    st.sidebar.header("Parametry grafů podél dráhy")
+    yshift = st.sidebar.number_input("yshift", min_value=0, max_value=1000, value=100)
+    yscale = st.sidebar.number_input("yscale", min_value=1, max_value=1000, value=20)
+
+    st.sidebar.header("Formát výstupu")
+    output_format = st.sidebar.radio("Zvolte formát výstupu", ["SVG", "PNG"], index=0)
+
+    return (window_length, polyorder, upper_limit, min_val, max_val, step,
+            linewidth, cmap, scale_length, show_scale, show_graphs, yshift, yscale, output_format)
+
 
 def handle_uploaded_file(uploaded_file, settings):
     temp_dir = tempfile.mkdtemp()
@@ -60,13 +87,10 @@ def handle_uploaded_file(uploaded_file, settings):
     with zipfile.ZipFile(zip_path, 'r') as zip_ref:
         zip_ref.extractall(temp_dir)
     data_dir = temp_dir + "/"
-    fig = plot_resistograph(data_dir, settings)
-    st.pyplot(fig)
-    shutil.rmtree(temp_dir)
 
-def plot_resistograph(data_dir, settings):
-    window_length, polyorder, upper_limit, min_val, max_val, step, linewidth, cmap, scale_length = settings
-    fig, [ax, cax] = plt.subplots(1, 2, figsize=(8, 6), gridspec_kw={'width_ratios': [40, 1]})
+    (window_length, polyorder, upper_limit, min_val, max_val, step, linewidth, cmap,
+     scale_length, show_scale, show_graphs, yshift, yscale, output_format) = settings
+
     resistograph_df = read_resistograph_data(
         data_dir,
         upper_limit=upper_limit,
@@ -74,16 +98,79 @@ def plot_resistograph(data_dir, settings):
         polyorder=polyorder
     )
     nodes_df = read_nodes(data_dir)
+
+    # výběr sloupců pro pruhy
+    all_cols = list(resistograph_df.columns)
+    st.subheader("Vyberte sloupce pro pruhy")
+    selected_cols_bars = st.pills("Sloupce pro pruhy", all_cols, default=all_cols, selection_mode='multi')
+
+    # výběr sloupců pro grafy podél dráhy
+    selected_cols_graphs = []
+    if show_graphs:
+        st.subheader("Vyberte sloupce pro grafy podél dráhy")
+        selected_cols_graphs = st.pills("Sloupce pro grafy", all_cols, default=all_cols, selection_mode='multi', key="sec")
+
+    fig = plot_resistograph(resistograph_df, nodes_df, settings, selected_cols_bars, selected_cols_graphs)
+
+    if output_format == "SVG":
+        buf = io.StringIO()
+        fig.savefig(buf, format="svg", bbox_inches="tight")
+        plt.close(fig)
+        svg_data = buf.getvalue()
+
+        components.html(svg_data, height=600, scrolling=True)
+        st.download_button(
+            label="Stáhnout jako SVG",
+            data=svg_data,
+            file_name="resistograph_plot.svg",
+            mime="image/svg+xml"
+        )
+    else:
+        buf = io.BytesIO()
+        fig.savefig(buf, format="png", bbox_inches="tight")
+        plt.close(fig)
+        st.image(buf.getvalue())
+        st.download_button(
+            label="Stáhnout jako PNG",
+            data=buf.getvalue(),
+            file_name="resistograph_plot.png",
+            mime="image/png"
+        )
+
+    shutil.rmtree(temp_dir)
+
+
+def plot_resistograph(resistograph_df, nodes_df, settings, selected_cols_bars, selected_cols_graphs):
+    (window_length, polyorder, upper_limit, min_val, max_val, step, linewidth, cmap,
+     scale_length, show_scale, show_graphs, yshift, yscale, output_format) = settings
+
+    fig, [ax, cax] = plt.subplots(1, 2, figsize=(8, 6), gridspec_kw={'width_ratios': [40, 1]})
     ax.plot(nodes_df['x'], nodes_df['y'], 'o')
-    add_resistograph_data(
-        resistograph_df, nodes_df, ax, cax,
-        min=min_val, max=max_val, step=step, linewidth=linewidth,
-        cmap=cmap, scale_length=scale_length
-    )
-    add_scale(ax)
+
+    # Barevné pruhy
+    if selected_cols_bars:
+        add_resistograph_data(
+            resistograph_df[selected_cols_bars], nodes_df, ax, cax,
+            min=min_val, max=max_val, step=step, linewidth=linewidth,
+            cmap=cmap
+        )
+
+    # Grafy podél dráhy
+    if show_graphs and selected_cols_graphs:
+        add_resistograph_graphs(
+            resistograph_df[selected_cols_graphs], nodes_df, ax,
+            yshift=yshift, yscale=yscale
+        )
+
+    # Boční měřítko
+    if show_scale:
+        add_all_scales_along_path(ax, resistograph_df.columns, nodes_df, scale_length=scale_length)
+        add_scale(ax)
+
     ax.set_aspect(1)
     plt.tight_layout()
     return fig
+
 
 settings = sidebar_settings()
 uploaded_file = st.file_uploader("Nahraj ZIP archiv s daty", type="zip")

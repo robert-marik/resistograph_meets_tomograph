@@ -1,3 +1,7 @@
+# This file is part of the resistograph_meets_tomograph project.
+# © 2025 Robert Mařík, Valentino Cristini
+# Licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0)
+# See LICENSE file or https://creativecommons.org/licenses/by/4.0/
 #%%
 """
 This script visualizes resistograph data on a tomogram. It processes resistograph data files 
@@ -38,6 +42,7 @@ import glob
 from scipy.signal import savgol_filter
 import logging
 from matplotlib.collections import LineCollection
+from matplotlib.transforms import Affine2D
 
 # Logging configuration
 logging.basicConfig(level=logging.WARNING, format='%(levelname)s - %(message)s')
@@ -145,11 +150,12 @@ def read_resistograph_data(data_dir, upper_limit=0, window_length=201, polyorder
     df.index.name = "depth/mm"
     df.columns.name = "position"
     df = df.loc[:upper_limit]
+    # return df
     return df.apply(lambda col: savgol_filter(col, window_length, polyorder))
 
 # === Plotting Functions ===
 
-def add_resistograph_data(df, nodes, ax, cax, min=100, max=200, step=300, linewidth=20, cmap='gray', scale_length=250):
+def add_resistograph_data(df, nodes, ax, cax, min=100, max=200, step=300, linewidth=20, cmap='gray'):
     """ Add resistograph data to the plot.
 
     Parameters:
@@ -181,36 +187,23 @@ def add_resistograph_data(df, nodes, ax, cax, min=100, max=200, step=300, linewi
     norm = plt.Normalize(min, max)
 
     for pos in df.columns:
-        neighbor = pos + 1 if pos < 12 else 1
-        drill_pos = 0.5 * (nodes.loc[pos] + nodes.loc[neighbor])
+        drill_pos = get_drilling_start(pos, nodes)['coordinates']
         values = df[pos].values
         direction = -drill_pos / np.linalg.norm(drill_pos)
 
         depth = np.arange(len(values)) / 100000
-        x = depth * direction['x'] + drill_pos['x']
-        y = depth * direction['y'] + drill_pos['y']
-
+        x, y = (depth.reshape(-1,1) * direction + drill_pos).T
         mask = ~np.isnan(values)
         x, y, values = x[mask], y[mask], np.clip(values[mask], min, max)
 
         segments = np.column_stack([x, y]).reshape(-1, 1, 2)[::step]
         segments = np.concatenate([segments[:-1], segments[1:]], axis=1)
 
-        lc = LineCollection(segments, cmap=cmap, norm=norm, linewidth=linewidth)
+        lc = LineCollection(segments, cmap=cmap, norm=norm, linewidth=linewidth#, alpha=1
+                            )
         lc.set_array(values[::step])
+        #lc.set_antialiaseds(False)
         ax.add_collection(lc)
-
-        # Scale visualization
-        tick_positions = np.arange(scale_length + 1, step=50) / 1000
-        xred = tick_positions * direction['x'] + drill_pos['x']
-        yred = tick_positions * direction['y'] + drill_pos['y']
-
-        tick_segments = np.column_stack([xred, yred]).reshape(-1, 1, 2)
-        tick_segments = np.concatenate([tick_segments[:-1], tick_segments[1:]], axis=1)
-        tick_colors = ['red' if i % 2 == 0 else 'black' for i in range(len(xred))]
-
-        lc_ticks = LineCollection(tick_segments, colors=tick_colors, linewidth=4)
-        ax.add_collection(lc_ticks)
 
     ax.axis('off')
     sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
@@ -244,6 +237,129 @@ def add_scale(ax):
     ax.text(x0 + 0.10, y0 - 0.005, '10cm', fontsize=10, ha='center', va='top')
     return ax
 
+def get_drilling_start(i, nodes_df):
+    """
+    Get the starting point and angle of the drilling for a given index.
+
+    Parameters
+    ----------
+    i : int
+        Index of the drilling position.
+    nodes_df : pd.DataFrame
+        DataFrame containing node information.
+
+    Returns
+    -------
+    dict
+        A dictionary containing the coordinates and angle of the drilling start.
+    """
+    ncols = nodes_df.shape[0]
+    j = i + 1 if i + 1 <= ncols else 1
+    ox, oy = (nodes_df.loc[[i, j], ['x', 'y']].mean())
+    angle = np.degrees(np.arctan2(-oy, -ox))
+    return {'coordinates': np.array([ox, oy]), 'angle': angle}
+
+def add_resistograph_graphs(resistograph_df, nodes_df, ax, yshift=100, yscale=20):
+    """
+    Add resistograph graphs to the plot.
+
+    Parameters
+    ----------
+    resistograph_df : pd.DataFrame
+        DataFrame containing resistograph data.
+    nodes_df : pd.DataFrame
+        DataFrame containing node information.
+    ax : matplotlib.axes.Axes
+        Axes object to add the graphs to.
+    yshift : int
+        Vertical shift for the graphs (default is 100).
+    yscale : int
+        Vertical scale for the graphs (default is 20).
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        The axes with the resistograph graphs added.
+    """
+    resistograph_df = (
+        (resistograph_df.index / 1000)
+        .to_series()
+        .pipe(lambda idx: resistograph_df.set_index(idx))
+    )
+    resistograph_df = ((resistograph_df - yshift).clip(lower=0))
+    resistograph_df = resistograph_df.div(resistograph_df.max()).div(yscale)
+    u = resistograph_df.index.values
+
+    for i in resistograph_df.columns:
+        driling_start = get_drilling_start(i, nodes_df)
+        T = Affine2D().rotate_deg(driling_start['angle']).translate(*driling_start['coordinates'])
+        v = resistograph_df[i].values
+        trans = T + ax.transData
+        ax.plot(u, v, transform=trans, color='C0')
+        ax.fill_between(u, v, 0, where=v >= 0, transform=trans,
+                        alpha=0.4, zorder=1000, color='C0')
+    return ax
+
+def add_scale_along_path(ax, drill_pos, scale_length=250, scale_step=50):
+        """
+        Add a scale along the path of the drill position.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes
+            Axes object to add the scale to.
+        drill_pos : np.ndarray
+            The starting position of the drill.
+        scale_length : int
+            Length of the scale in mm (default is 250mm).
+        scale_step : int
+            Step size for the scale ticks in mm (default is 50mm).
+
+        Returns
+        -------
+        matplotlib.axes.Axes
+            The axes with the scale added.
+        """
+        # Scale visualization
+        direction = -drill_pos / np.linalg.norm(drill_pos)
+
+        tick_positions = np.arange(scale_length + 1, step=scale_step) / 1000
+        xred = tick_positions * direction[0] + drill_pos[0]
+        yred = tick_positions * direction[1] + drill_pos[1]
+
+        tick_segments = np.column_stack([xred, yred]).reshape(-1, 1, 2)
+        tick_segments = np.concatenate([tick_segments[:-1], tick_segments[1:]], axis=1)
+        tick_colors = ['red' if i % 2 == 0 else 'black' for i in range(len(xred))]
+
+        lc_ticks = LineCollection(tick_segments, colors=tick_colors, linewidth=4)
+        ax.add_collection(lc_ticks) 
+        return ax     
+
+def add_all_scales_along_path(ax, drill_positions, nodes_df, scale_length=250):
+    """
+    Add scale bars along the path of the drill positions.
+
+    Parameters
+    ----------
+    ax : matplotlib.axes.Axes
+        Axes object to add the scale bars to.
+    drill_positions : list
+        List of drill positions.
+    nodes_df : pandas.DataFrame
+        DataFrame containing node information.
+    scale_length : int
+        Length of the scale bars in mm (default is 250mm).
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        The axes with the scale bars added.
+    """
+    for drill_pos in drill_positions:
+        drill_coordinates = get_drilling_start(drill_pos, nodes_df)
+        add_scale_along_path(ax, drill_coordinates['coordinates'], scale_length)     
+    return ax   
+
 # %%
 # === Main ===
 
@@ -261,19 +377,34 @@ def main():
     settings_plot = {
         'min': 100,
         'max': 200,
-        'step': 300,
+        'step': 200,
         'linewidth': 20,
         'cmap': 'gray'
     }
+    settings_graphs = {
+        'yshift': 100,
+        'yscale': 20
+    }
     scale_length = 250
+    add_scale = True
+    # subset of columns
+    cols_bars = [1,2,3,4,5, 11, 12]
+    cols_bars = []
+    cols_graphs = [6,7,8,9,10]
 
     fig, [ax, cax] = plt.subplots(1, 2, figsize=(8, 6), gridspec_kw={'width_ratios': [40, 1]})
     resistograph_df = read_resistograph_data(data_dir, **settings_filter)
     nodes_df = read_nodes(data_dir)
 
     ax.plot(nodes_df['x'], nodes_df['y'], 'o')
-    add_resistograph_data(resistograph_df, nodes_df, ax, cax, scale_length=scale_length, **settings_plot)
-    add_scale(ax)
+
+    add_resistograph_data(resistograph_df.loc[:,cols_bars], nodes_df, ax, cax, **settings_plot)
+    add_resistograph_graphs(resistograph_df.loc[:,cols_graphs], nodes_df, ax, **settings_graphs)
+    if add_scale:
+        add_all_scales_along_path(ax, resistograph_df.columns, nodes_df, scale_length=scale_length)
+        add_scale(ax)
+    #ax.axis('off')
+    #cax.axis('off')
 
     ax.set_aspect(1)
     plt.tight_layout()
