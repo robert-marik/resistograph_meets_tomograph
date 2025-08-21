@@ -92,6 +92,8 @@ def read_nodes(data_dir):
     pd.DataFrame
         DataFrame containing the nodes with centered coordinates.
     """
+    if not data_dir.endswith('/'):
+        data_dir += '/'
     path = f"{data_dir}nodes.csv"
     logging.info(f"Reading nodes from {path}")
     nodes = pd.read_csv(path, header=None)
@@ -142,6 +144,8 @@ def read_resistograph_data(data_dir, upper_limit=0, window_length=201, polyorder
     pd.DataFrame
         DataFrame containing processed resistograph data.
     """
+    if not data_dir.endswith('/'):
+        data_dir += '/'
     filepaths = sorted(glob.glob(f"{data_dir}*.dpa"))
     data_frames = {i: read_resistograph_file(fp) for i, fp in enumerate(filepaths)}
     df = pd.concat(data_frames, axis=1)
