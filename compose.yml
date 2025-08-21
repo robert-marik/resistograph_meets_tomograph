@@ -1,0 +1,8 @@
+services:
+    resisto:
+        network_mode: bridge
+        working_dir: /app/app
+        ports:
+            - 8501:80
+        image: resisto:latest        
+        build: .
