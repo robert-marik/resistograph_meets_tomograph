@@ -52,12 +52,12 @@ st.title("Resistograph Data Visualization")
 # Sidebar nastavení
 # ---------------------------
 def sidebar_settings():
-    st.sidebar.header("Nastavení filtru")
+    st.sidebar.header("Filter settings")
     window_length = st.sidebar.number_input("Window length", min_value=3, value=201, step=2)
     polyorder = st.sidebar.number_input("Polyorder", min_value=1, value=3, step=1)
     upper_limit = st.sidebar.number_input("Upper limit (mm)", min_value=0, value=250, step=10)
 
-    st.sidebar.header("Nastavení vizualizace")
+    st.sidebar.header("Visualization settings")
     min_val = st.sidebar.number_input("Min", value=100, step=10)
     max_val = st.sidebar.number_input("Max", value=200, step=10)
     step = st.sidebar.number_input("Step", value=300, step=10)
@@ -65,13 +65,13 @@ def sidebar_settings():
     cmap = st.sidebar.selectbox("Colormap", ["gray", "viridis", "plasma", "inferno", "magma", "cividis"])
     scale_length = st.sidebar.number_input("Scale length (mm)", value=250, step=10)
 
-    st.sidebar.header("Volby")
-    show_scale = st.sidebar.checkbox("Zobrazit pomocné měřítko", value=True)
-    show_graphs = st.sidebar.checkbox("Zobrazit grafy podél dráhy", value=True)
+    st.sidebar.header("Options")
+    show_scale = st.sidebar.checkbox("Show scale", value=True)
+    show_graphs = st.sidebar.checkbox("Show graphs along paths", value=True)
 
-    st.sidebar.header("Parametry grafů podél dráhy")
+    st.sidebar.header("Parameters for graphs along the path")
     yshift = st.sidebar.number_input("yshift", min_value=0, max_value=1000, value=100)
-    yscale = st.sidebar.number_input("yscale", min_value=1, max_value=1000, value=20)
+    yscale = st.sidebar.number_input("yscale (zoom out factor)", min_value=1, max_value=1000, value=20)
 
     return (window_length, polyorder, upper_limit, min_val, max_val, step,
             linewidth, cmap, scale_length, show_scale, show_graphs, yshift, yscale)
@@ -93,6 +93,8 @@ def plot_resistograph(resistograph_df, nodes_df, settings, selected_cols_bars, s
             min=min_val, max=max_val, step=step, linewidth=linewidth,
             cmap=cmap
         )
+    else:
+        cax.axis('off')
 
     if show_graphs and selected_cols_graphs:
         add_resistograph_graphs(
@@ -104,6 +106,7 @@ def plot_resistograph(resistograph_df, nodes_df, settings, selected_cols_bars, s
         add_all_scales_along_path(ax, resistograph_df.columns, nodes_df, scale_length=scale_length)
         add_scale(ax)
 
+    ax.axis('off')
     ax.set_aspect(1)
     plt.tight_layout()
     return fig
@@ -200,13 +203,35 @@ shutil.rmtree(temp_dir)
 # Hlavní aplikace
 # ---------------------------
 settings = sidebar_settings()
-tab1, tab2 = st.tabs(["Aplikace", "Jupyter kód"])
+tab1, tab2 = st.tabs(["GUI", "Jupyter code"])
 
 selected_cols_bars = []
 selected_cols_graphs = []
 
+def handle_selection(key, all_selected, all_items, toggle_label):
+    selected = st.session_state.get(f"selected_items_{key}", all_items)
+    if toggle_label in selected:
+        st.session_state[f"selected_items_{key}"] = [] if all_selected else all_items.copy()
+    else:
+        st.session_state[f"selected_items_{key}"] = [x for x in selected if x != toggle_label]
+
+
+def make_pills(all_items, key="A"):
+    items = st.session_state.get(f"selected_items_{key}", all_items)
+    all_selected = set(items) == set(all_items)
+    toggle_label = "Deselect All" if all_selected and all_items else "Select All"
+    items_with_toggle = all_items + [toggle_label] if all_items else []
+    st.session_state[f"selected_items_{key}"] = items
+    st.pills(
+        "Select Items:",
+        options=items_with_toggle,
+        selection_mode="multi",
+        key=f"selected_items_{key}",
+        on_change=lambda: handle_selection(key, all_selected, all_items, toggle_label),
+    )
+
 with tab1:
-    uploaded_file = st.file_uploader("Nahraj ZIP archiv s daty", type="zip")
+    uploaded_file = st.file_uploader("Upload ZIP file with data", type="zip")
     if uploaded_file:
         temp_dir = tempfile.mkdtemp()
         zip_path = os.path.join(temp_dir, "data.zip")
@@ -228,12 +253,14 @@ with tab1:
         nodes_df = read_nodes(data_dir)
 
         all_cols = list(resistograph_df.columns)
-        st.subheader("Vyberte sloupce pro pruhy")
-        selected_cols_bars = st.pills("Sloupce pro pruhy", all_cols, default=all_cols, selection_mode='multi')
+        st.subheader("Select columns for colored bars")
+        make_pills(all_cols, key="A")
+        selected_cols_bars = st.session_state.get("selected_items_A", all_cols)
 
         if show_graphs:
-            st.subheader("Vyberte sloupce pro grafy podél dráhy")
-            selected_cols_graphs = st.pills("Sloupce pro grafy", all_cols, default=all_cols, selection_mode='multi', key="sec")
+            st.subheader("Select columns for graphs along the path")
+            make_pills(all_cols, key="B")
+            selected_cols_graphs = st.session_state.get("selected_items_B", all_cols)   
 
         fig = plot_resistograph(resistograph_df, nodes_df, settings, selected_cols_bars, selected_cols_graphs)
 
