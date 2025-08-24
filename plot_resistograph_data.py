@@ -19,7 +19,6 @@ from scipy.signal import savgol_filter
 import logging
 from matplotlib.collections import LineCollection
 from matplotlib.transforms import Affine2D
-import argparse
 
 # --- NEW: importy pro konfiguraci ---
 from pydantic import BaseModel, Field, PositiveInt, DirectoryPath, model_validator
@@ -73,56 +72,6 @@ class AppConfig(BaseModel):
     cols_bars: Optional[List[int]] = None
     cols_graphs: Optional[List[int]] = None
 
-# Agrs from CLI
-def get_args():
-    """Parse command line arguments for resistograph data visualization.
-    Returns:
-    -------
-    argparse.Namespace
-        Parsed command line arguments.
-    """
-    # Argument parser setup
-    parser = argparse.ArgumentParser(description="Visualization of resistograph data on a tomogram.")
-    
-    # Filtr
-    parser.add_argument("--window_length", type=int, default=201)
-    parser.add_argument("--polyorder", type=int, default=3)
-    parser.add_argument("--upper_limit", type=int, default=200)
-
-    # Vizualizace
-    parser.add_argument("--min", type=int, default=100)
-    parser.add_argument("--max", type=int, default=200)
-    parser.add_argument("--step", type=int, default=300)
-    parser.add_argument("--linewidth", type=int, default=20)
-    parser.add_argument("--cmap", type=str, default="gray")
-
-    parser.add_argument("--yshift", type=int, default=100)
-    parser.add_argument("--yscale", type=int, default=20)
-    parser.add_argument("--color", type=str, default="C0")
-
-    # Ostatní
-    parser.add_argument("--data_dir", type=str, default="data/")
-    parser.add_argument("--scale_length", type=int, default=250)
-
-    def parse_int_list(s):
-        """Converts '1,2,3' -> [1, 2, 3]"""
-        return [int(x) for x in s.split(",")]
-
-    parser.add_argument(
-    "--cols_bars",
-    type=parse_int_list,
-    default=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],   # default value
-    help="List of comma separated numbers (e.g. 1,2,3)"
-    )
-
-    parser.add_argument(
-    "--cols_graphs",
-    type=parse_int_list,
-    default=[6, 7, 8, 9, 10],   # default value
-    help="List of comma separated numbers (e.g. 1,2,3)"
-    )
-
-    return parser.parse_args()
 # === Data Loading ===
 
 def read_nodes(data_dir):
@@ -419,31 +368,51 @@ def add_all_scales_along_path(ax, drill_positions, nodes_df, scale_length=250):
 
 # %%
 # === Main ===
+import typer
+from typing import List
 
-def main():
+app = typer.Typer()
+
+@app.command()
+def main(
+    window_length: int = 201,
+    polyorder: int = 3,
+    upper_limit: int = 200,
+    min: int = 100,
+    max: int = 200,
+    step: int = 300,
+    linewidth: int = 20,
+    cmap: str = "gray",
+    yshift: int = 100,
+    yscale: int = 20,
+    color: str = "C0",
+    data_dir: str = "data/",
+    scale_length: int = 250,
+    cols_bars: List[int] = typer.Option([1,2,3,4,5,6,7,8,9,10,11,12], help="Comma-separated list of columns for bars"),
+    cols_graphs: List[int] = typer.Option([6,7,8,9,10], help="Comma-separated list of columns for graphs"),
+):
     """ Main function to visualize resistograph data on a tomogram.
     It reads the resistograph data and nodes, processes the data, and plots it.
     """
-    args = get_args()
 
     config = AppConfig(
-        data_dir=args.data_dir,  # může zůstat stejné
+        data_dir=data_dir,  # může zůstat stejné
         filter=FilterSettings(
-            window_length=args.window_length, 
-            polyorder=args.polyorder, 
-            upper_limit=args.upper_limit),
+            window_length=window_length, 
+            polyorder=polyorder, 
+            upper_limit=upper_limit),
         plot=PlotSettings(
-            min=args.min, 
-            max=args.max, 
-            linewidth=args.linewidth, 
-            cmap=args.cmap, 
-            step=args.step),
+            min=min, 
+            max=max, 
+            linewidth=linewidth, 
+            cmap=cmap, 
+            step=step),
         graphs=GraphSettings(
-            yshift=args.yshift, 
-            yscale=args.yscale, 
-            color=args.color),
-        cols_bars=args.cols_bars,
-        cols_graphs=args.cols_graphs
+            yshift=yshift, 
+            yscale=yscale, 
+            color=color),
+        cols_bars=cols_bars,
+        cols_graphs=cols_graphs
     )    
 
     fig, [ax, cax] = plt.subplots(1, 2, figsize=(8, 6), gridspec_kw={'width_ratios': [40, 1]})
@@ -467,4 +436,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    app()
