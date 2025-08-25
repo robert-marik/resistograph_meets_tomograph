@@ -375,8 +375,10 @@ app = typer.Typer()
 
 @app.command()
 def main(
-    window_length: int = 201,
-    polyorder: int = 3,
+    window_length: int = typer.Option(
+        201, help="Window length for Savitzky-Golay filter (must be bigger than polyorder)"),
+    polyorder: int = typer.Option(
+        3, min=1, help="Polynomial order for filter (must be smaller than window_length)"),
     upper_limit: int = 200,
     min: int = 100,
     max: int = 200,
@@ -388,8 +390,6 @@ def main(
     color: str = "C0",
     data_dir: str = "data/",
     scale_length: int = 250,
-    cols_bars: List[int] = typer.Option([1,2,3,4,5,6,7,8,9,10,11,12], help="Comma-separated list of columns for bars"),
-    cols_graphs: List[int] = typer.Option([6,7,8,9,10], help="Comma-separated list of columns for graphs"),
 ):
     """ Main function to visualize resistograph data on a tomogram.
     It reads the resistograph data and nodes, processes the data, and plots it.
@@ -411,9 +411,10 @@ def main(
             yshift=yshift, 
             yscale=yscale, 
             color=color),
-        cols_bars=cols_bars,
-        cols_graphs=cols_graphs
-    )    
+        scale_length=scale_length,
+        cols_bars = [1,2,3,4,5,6,7,8,9,10,11,12],
+        cols_graphs = [1,2,3,4,5,6,7,8,9,10,11,12],
+        )    
 
     fig, [ax, cax] = plt.subplots(1, 2, figsize=(8, 6), gridspec_kw={'width_ratios': [40, 1]})
     resistograph_df = read_resistograph_data(str(config.data_dir), **config.filter.model_dump())
