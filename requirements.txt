@@ -3,3 +3,5 @@ numpy
 scipy
 matplotlib
 streamlit==1.45
+typer
+pydantic
