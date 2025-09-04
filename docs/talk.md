@@ -5,15 +5,18 @@ marp: true
 <style>
 section {
   place-content: flex-start;
+  background-color: #FAFAFA;
 }
 </style>
 
+![bg left](strom.png)
 # Resistograph meets tomograph
 
 Robert Mařík & Valentino Cristini
 Mendel University in Brno
 
 ---
+![bg left](strom.png)
 
 # Content of the talk
 
@@ -47,7 +50,6 @@ Mendel University in Brno
 
 
 ---
-<!-- no-fragment -->
 
 ![bg left:60% height:90%](resistograph_2D.png)
 
@@ -87,7 +89,6 @@ Advantages
 - easy to integrate with other tools
 
 ---
-<!-- no-fragment -->
 
 # Python library
 
@@ -99,18 +100,9 @@ Limitations
 - requires installation of Python, Python IDE and libraries
 - no GUI
 
-
-
 ---
 
-# User complaints
-
-- Want to use a GUI. No coding.
-- Need simple installation.
-- Need easy sharing.
-
-
----
+![bg left:40%](holka_OK.jpg)
 
 # Streamlit
 
@@ -130,7 +122,6 @@ Btw: what exactly does it mean "easy to use"?
 # Vibe coding with ChatGPT 
 
 - ChatGPT 5 on August 2025
-- communication in Czech
 - web app in 2 prompts
 
 ~~~
@@ -147,14 +138,16 @@ prednastavene volby.
 
 ---
 
+![bg left:40%](holka_OK.jpg)
+
 # Docker
 
 A containerization platform
 - packages application and its dependencies into a container
 - ensures consistency across different environments
 - easy to share and deploy
-- widely used in industry and academia
-- starts a container with a single command in miliseconds
+- widely used in industry, academia, research
+  
 
 ---
 
@@ -177,8 +170,7 @@ Advantages
 # Summary
 
 - Resistograph and tomograph are complementary tools for tree stem inspection
-- Merging data from both devices provides a more comprehensive understanding of stem condition
 - A Python library was developed to facilitate data merging and visualization
-- Streamlit can be used to create a user-friendly web application for non-programmers
-- Docker ensures easy installation across different systems
+- GUI is possible
+- Installation is simple
 
