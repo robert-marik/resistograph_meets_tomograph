@@ -6,7 +6,7 @@ MD = talk.md
 REMOTE = cornus.mendelu.cz:html/talks/Marik_Ohrid_2025.pdf
 
 all:
-	marp $(MD) -o $(PDF) --allow-local-file
+	marp $(MD) -o $(PDF) --allow-local-files
 	marp $(MD) -o $(HTML)
 
 upload: $(PDF)
