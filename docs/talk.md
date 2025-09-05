@@ -37,6 +37,10 @@ Mendel University in Brno
 
 ---
 
+![bg height:100%](Kyoto.png)
+
+---
+
 ![bg left](strom.png)
 
 # Content of the talk
