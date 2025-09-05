@@ -83,9 +83,9 @@ Mendel University in Brno
 
 # Merge data II
 
-- Merge resistograph data with tomograph data.
-- Visualize the merged data.
-- Look for short or long decreases in resistograph data. This indicates cracks and cavities, respectively.
+- merge resistograph data with tomograph data
+- visualize the merged data
+- look for short or long decreases in resistograph data. This indicates cracks and cavities, respectively
 
 ---
 
@@ -126,10 +126,10 @@ Limitations
 
 ![bg left:60%](app2.png)
 
-# Vibe coding with ChatGPT 
+# Vibe coding
 
 - ChatGPT 5 on August 2025
-- web app in 2 prompts
+- web app in two prompts
 
 ~~~
 Mam nasledujici knihovnu. Napis streamlit 
