@@ -2,11 +2,31 @@
 marp: true
 ---
 
+<!-- footer: ![w:150](LDF_logo.png) -->
+
 <style>
 section {
   place-content: flex-start;
   background-color: #FAFAFA;
 }
+
+
+h1 {
+  color: #0a5028;
+}
+
+footer {
+  /* Unset default placing inherited from the built-in theme */
+  left: auto;
+  right: auto;
+  top: auto;
+  bottom: auto;
+
+  /* Place to right-bottom */
+  right: 20px;
+  bottom: 20px;
+}
+
 </style>
 
 ![bg left](strom.png)
@@ -16,14 +36,15 @@ Robert Mařík & Valentino Cristini
 Mendel University in Brno
 
 ---
+
 ![bg left](strom.png)
 
 # Content of the talk
 
 - Resistograph and tomograph: strengths and limitations
 - Combined approach: a Python library to merge data from both devices
-- Technical note 1: vibe coding in 2025 (GUI via ChatGPT)
-- Technical note 2: code sharing in 2025 (Docker)
+- Vibe coding in 2025 (ChatGPT)
+- Code sharing in 2025 (Docker)
 
 ---
 
@@ -39,7 +60,6 @@ Mendel University in Brno
 
 ---
 
-
 # Resistograph
 
 - scans the power required to microdrilling at given speed
@@ -48,24 +68,18 @@ Mendel University in Brno
 
 ![width:1000px](resistograph_curves.png)
 
-
 ---
 
-![bg left:60% height:90%](resistograph_2D.png)
-
+![bg left:64% height:100%](resistograph_2D.png)
 
 # Merge data I
 
 - Transform resistograph data to 2D geometry of the cross section
 - Visualize the data in the new geometry
 
-
-
 ---
-<!-- no-fragment -->
 
-![bg left height:100%](resistograph_over_tomo.png)
-
+![bg left:55% height:100%](resistograph_over_tomo.png)
 
 # Merge data II
 
@@ -73,15 +87,11 @@ Mendel University in Brno
 - Visualize the merged data.
 - Look for short or long decreases in resistograph data. This indicates cracks and cavities, respectively.
 
-
 ---
-<!-- no-fragment -->
 
 # Python library
 
-![bg left width:100%](overlays.png)
-
-Advantages
+![bg left:60% height:100%](overlays.png)
 
 - language widely used in scientific data processing
 - many libraries for data processing and visualization
@@ -92,7 +102,7 @@ Advantages
 
 # Python library
 
-![bg left width:100%](code.png)
+![bg left:60% width:100%](python_code.png)
 
 Limitations
 
@@ -102,21 +112,18 @@ Limitations
 
 ---
 
-![bg left:40%](holka_OK.jpg)
+![bg left:60% ](app2.png)
 
 # Streamlit
 
-- Python library for building web applications
-- easy to use, requires minimal code
+- library for building web apps
+- requires minimal code
 - interactive widgets for user input
 - real-time updates
-- free hosting on Streamlit Cloud
-- widely used in data science and machine learning communities
-- widely used in industry and academia
-
-Btw: what exactly does it mean "easy to use"?
+- widely used in data science and machine learning, in industry and academia
 
 ---
+
 ![bg left:60%](app2.png)
 
 # Vibe coding with ChatGPT 
@@ -138,7 +145,7 @@ prednastavene volby.
 
 ---
 
-![bg left:40%](holka_OK.jpg)
+![bg left:50%](docker.png)
 
 # Docker
 
@@ -147,17 +154,16 @@ A containerization platform
 - ensures consistency across different environments
 - easy to share and deploy
 - widely used in industry, academia, research
-  
 
 ---
 
-# Running dockerized app
+![bg left:50%](docker.png)
+
+# Run dockerized app
 
 ~~~
 docker compose up
 ~~~
-
-Advantages
 
 - 🚫 No Python install
 - 🚫 No dependency issues
@@ -167,10 +173,12 @@ Advantages
 
 ---
 
+![bg left](tree_python4.png)
+
 # Summary
 
 - Resistograph and tomograph are complementary tools for tree stem inspection
-- A Python library was developed to facilitate data merging and visualization
-- GUI is possible
-- Installation is simple
+- A Python library was developed to simplify data merging and visualization
+- GUI for Python is possible with Streamlit
+- Installation can be made simple and repeatable with Docker
 
