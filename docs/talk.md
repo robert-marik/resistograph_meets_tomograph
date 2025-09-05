@@ -23,8 +23,8 @@ footer {
   bottom: auto;
 
   /* Place to right-bottom */
-  right: 20px;
-  bottom: 20px;
+  right: 0px;
+  bottom: 0px;
 }
 
 </style>
