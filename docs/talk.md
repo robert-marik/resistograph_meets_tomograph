@@ -173,7 +173,7 @@ docker compose up
 
 ---
 
-![bg left](tree_python4.png)
+![bg left](strom2.png)
 
 # Summary
 
