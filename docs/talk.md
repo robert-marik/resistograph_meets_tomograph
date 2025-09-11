@@ -30,7 +30,7 @@ footer {
 </style>
 
 ![bg left](strom.png)
-# Resistograph meets tomograph
+# When acoustic tomography meets resistograph
 
 Robert Mařík & Valentino Cristini
 Mendel University in Brno
