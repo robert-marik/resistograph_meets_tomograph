@@ -41,10 +41,10 @@ Mendel University in Brno
 
 # Content of the talk
 
-- Resistograph and tomograph: strengths and limitations
+- Tomograph and resistograph: strengths and limitations
 - Combined approach: a Python library to merge data from both devices
-- Vibe coding in 2025 (ChatGPT)
-- Code sharing in 2025 (Docker)
+- Vibe coding (ChatGPT)
+- Code containerization (Docker)
 
 ---
 
@@ -106,9 +106,8 @@ Mendel University in Brno
 
 Limitations
 
-- requires programming skills
+- no GUI, requires programming skills
 - requires installation of Python, Python IDE and libraries
-- no GUI
 
 ---
 
@@ -128,6 +127,7 @@ Limitations
 
 # Vibe coding
 
+- programming using LLM
 - ChatGPT 5 on August 2025
 - web app in two prompts
 
