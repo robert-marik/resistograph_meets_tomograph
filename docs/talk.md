@@ -8,34 +8,56 @@ marp: true
 section {
   place-content: flex-start;
   background-color: #FAFAFA;
+  padding: 30px !important;
 }
-
 
 h1 {
   color: #0a5028;
 }
 
 footer {
-  /* Unset default placing inherited from the built-in theme */
   left: auto;
   right: auto;
   top: auto;
   bottom: auto;
-
-  /* Place to right-bottom */
   right: 0px;
   bottom: 0px;
 }
 
+.box-adv {
+  background:#e8f5e9; 
+  border-left:6px solid #2e7d32; 
+  padding-top:.5em; 
+  padding-bottom:.5em; 
+  margin:1em 0;
+}
+
+.box-lim {
+  background:#fdecea; 
+  border-left:6px solid #c62828; 
+  padding-top:.5em; 
+  padding-bottom:.5em; 
+  margin:1em 0;
+}
+
+section.title {
+  place-content: center;
+  padding: 80px !important;
+}
+
 </style>
+
+<!-- _class: title -->
 
 ![bg left](strom.png)
 # When acoustic tomography meets resistograph
 
-Robert Mařík & Valentino Cristini
+Robert Mařík & Valentino Cristini  
 Mendel University in Brno
 
 ---
+
+<!-- _class: title -->
 
 ![bg left](strom.png)
 
@@ -50,12 +72,16 @@ Mendel University in Brno
 
 # Tomograph
 
-- fast and reliable tool for stem inspection
-- **global information** in the whole cross section
-- shows the size and shape of the internal defects
-- limitations from wave length and number of rays available for reconstruction
-- cracks are reported as cavities
+- Fast and reliable tool for stem inspection  
+- Provides **global information** across the whole cross section  
+- Shows size and shape of internal defects  
 
+<div class="box-lim">
+
+- Limited by wave length and number of rays for reconstruction  
+- Cracks are reported as cavities  
+
+</div>
 
 ![bg left](tree05.png)
 
@@ -63,8 +89,8 @@ Mendel University in Brno
 
 # Resistograph
 
-- scans the power required to microdrilling at given speed
-- measures **local** mechanical properties of the material
+- Measures the power required for microdrilling at a fixed speed  
+- Provides **local** mechanical properties of the material  
 
 ![](resistograph_curves.png)
 
@@ -74,8 +100,11 @@ Mendel University in Brno
 
 # Data in cross section geometry
 
-- Transform resistograph data to 2D geometry of the cross section
-- Visualize the data in the new geometry
+- Transform resistograph data into 2D cross-section geometry  
+- Visualize the transformed data  
+- Two types of visualization
+  - curves
+  - color scale
 
 ---
 
@@ -83,10 +112,10 @@ Mendel University in Brno
 
 # Merge data
 
-- merge resistograph data with tomograph data
-- visualize the merged data
-- long dark part: cavity
-- short dark part: crack or small cavity
+- Merge resistograph data with tomograph data  
+- Visualize merged datasets  
+- Long dark part: cavity  
+- Short dark part: crack or small cavity  
 
 ---
 
@@ -94,11 +123,15 @@ Mendel University in Brno
 
 ![bg left:60% height:100%](overlays.png)
 
-Advantages
+## Advantages
 
-- language widely used in scientific data processing
-- easy to automate, scale, modify, share and reuse
-- easy to integrate with other tools
+<div class="box-adv">
+
+- Python is widely used in scientific data processing  
+- Easy automation, scaling, modification, sharing, and reuse  
+- Simple integration with other tools  
+
+</div>
 
 ---
 
@@ -106,11 +139,15 @@ Advantages
 
 ![bg left:60% width:100%](python_code.png)
 
-Limitations
+## Limitations
 
-- no GUI
-- requires coding skills
-- requires installation of Python, Python IDE and libraries
+<div class="box-lim">
+
+- No graphical user interface (GUI)  
+- Requires programming skills  
+- Needs installation of Python, IDE, and libraries  
+
+</div>
 
 ---
 
@@ -118,11 +155,15 @@ Limitations
 
 # Streamlit
 
-- library for building web apps
-- requires minimal code
-- interactive widgets for user input
-- real-time updates
-- widely used in data science and machine learning, in industry and academia
+<div class="box-adv">
+
+- Library for building interactive web apps  
+- Requires minimal code  
+- Provides interactive widgets for user input  
+- Real-time updates  
+- Widely used in data science and machine learning  
+
+</div>
 
 ---
 
@@ -130,20 +171,22 @@ Limitations
 
 # Vibe coding
 
-- programming using LLM
-- ChatGPT 5 on August 2025
-- web app in two prompts
+- Programming with large language models  
+- ChatGPT 5 (August 2025)  
+- Web app produced in two prompts  
 
 ~~~
-Mam nasledujici knihovnu. Napis streamlit 
-program, ktery umozni nahrat zazipovany 
-adresar s daty a spusti na nem prikazy 
-odpovidajici main funkci. Vystup se zobrazi.
+I have the following library. Write 
+a streamlit program that allows you 
+to upload a zipped directory with data 
+and run commands corresponding to 
+the main function on it. 
+The output will be displayed.
 ~~~
 
 ~~~
-OK. V levem panelu chci mit moznost menit 
-prednastavene volby.
+OK. I want to be able to change 
+the preset options in the left panel.
 ~~~
 
 ---
@@ -152,11 +195,16 @@ prednastavene volby.
 
 # Docker
 
-A containerization platform
-- packages application and its dependencies into a container
-- ensures consistency across different environments
-- easy to share and deploy
-- widely used in industry, academia, research
+- Containerization platform  
+
+<div class="box-adv">
+
+- Packages app and dependencies into a single container  
+- Ensures consistency across environments  
+- Easy to share and deploy  
+- Widely used in industry and research  
+
+</div>
 
 ---
 
@@ -168,11 +216,15 @@ A containerization platform
 docker compose up
 ~~~
 
-- 🚫 No Python install
-- 🚫 No dependency issues
-- 🖥️ Works on Win / Mac / Linux
-- 📂 Just clone repo with `Dockerfile` and `docker-compose.yml`
-- ⏳ First run = minutes, later = ms
+<div class="box-adv">
+
+- No Python install required  
+- No dependency issues  
+- Works on Win / Mac / Linux  
+- Just clone repo with `Dockerfile` and `docker-compose.yml`  
+- First run takes minutes, later runs take ms  
+
+</div>
 
 ---
 
@@ -180,8 +232,12 @@ docker compose up
 
 # Summary
 
-- Resistograph and tomograph are complementary tools for tree stem inspection
-- A Python library was developed to simplify data merging and visualization
-- GUI for Python is possible with Streamlit
-- Installation can be made simple and repeatable with Docker
+- Resistograph and tomograph are complementary tools for tree stem inspection  
 
+<div class="box-adv">
+
+- A Python library was developed to simplify data interpretation  
+- GUI is possible with Streamlit  
+- Installation can be simplified and repeated with Docker  
+
+</div>
