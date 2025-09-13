@@ -51,8 +51,9 @@ Mendel University in Brno
 # Tomograph
 
 - fast and reliable tool for stem inspection
-- global information from the whole cross section
+- **global information** in the whole cross section
 - shows the size and shape of the internal defects
+- limitations from wave length and number of rays available for reconstruction
 - cracks are reported as cavities
 
 
@@ -63,29 +64,29 @@ Mendel University in Brno
 # Resistograph
 
 - scans the power required to microdrilling at given speed
-- measures mechanical properties of the material
-- local information
+- measures **local** mechanical properties of the material
 
-![width:1000px](resistograph_curves.png)
+![](resistograph_curves.png)
 
 ---
 
-![bg left:64% height:100%](resistograph_2D.png)
+![bg left:60% width:100%](resistograph_2D.png)
 
-# Merge data I
+# Data in cross section geometry
 
 - Transform resistograph data to 2D geometry of the cross section
 - Visualize the data in the new geometry
 
 ---
 
-![bg left:55% height:100%](resistograph_over_tomo.png)
+![bg left height:100%](resistograph_over_tomo.png)
 
-# Merge data II
+# Merge data
 
 - merge resistograph data with tomograph data
 - visualize the merged data
-- look for short or long decreases in resistograph data. This indicates cracks and cavities, respectively
+- long dark part: cavity
+- short dark part: crack or small cavity
 
 ---
 
@@ -93,8 +94,9 @@ Mendel University in Brno
 
 ![bg left:60% height:100%](overlays.png)
 
+Advantages
+
 - language widely used in scientific data processing
-- many libraries for data processing and visualization
 - easy to automate, scale, modify, share and reuse
 - easy to integrate with other tools
 
@@ -106,7 +108,8 @@ Mendel University in Brno
 
 Limitations
 
-- no GUI, requires programming skills
+- no GUI
+- requires coding skills
 - requires installation of Python, Python IDE and libraries
 
 ---

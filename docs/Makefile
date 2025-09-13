@@ -1,8 +1,15 @@
-# Makefile pro generování prezentace a upload
+# Makefile for talk compilation and upload
+# ----------------------------------------
+#
+# all        Use Marp to compule talk.md into PDF and HTML
+# deploy     Copy outputs to ../dist/ and upload using ghp-import
+
+help:
+	@grep -E '^# ' Makefile | sed 's/^# //'
 
 all:
-	docker run --rm --init -v $(PWD):/home/marp/app/ -e LANG=$(LANG) -e MARP_USER="$(id -u):$(id -g)"  marpteam/marp-cli talk.md --pdf --allow-local-files
-	docker run --rm --init -v $(PWD):/home/marp/app/ -e LANG=$(LANG) -e MARP_USER="$(id -u):$(id -g)"  marpteam/marp-cli talk.md 
+	docker run --rm --init -v $(PWD):/home/marp/app/ -e LANG=$(LANG) -e MARP_USER="$$(id -u):$$(id -g)"  marpteam/marp-cli talk.md --pdf --allow-local-files
+	docker run --rm --init -v $(PWD):/home/marp/app/ -e LANG=$(LANG) -e MARP_USER="$$(id -u):$$(id -g)"  marpteam/marp-cli talk.md 
 
 deploy:
 	cp *.png ../dist/
