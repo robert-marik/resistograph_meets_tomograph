@@ -25,7 +25,7 @@ footer {
 }
 
 .box-adv {
-  background:#e8f5e9; 
+  background: #e8f5e9; 
   border-left:6px solid #2e7d32; 
   padding-top:.5em; 
   padding-bottom:.5em; 
@@ -33,7 +33,7 @@ footer {
 }
 
 .box-lim {
-  background:#fdecea; 
+  background: #fdecea; 
   border-left:6px solid #c62828; 
   padding-top:.5em; 
   padding-bottom:.5em; 
@@ -78,7 +78,7 @@ Mendel University in Brno
 
 <div class="box-lim">
 
-- Limited by wave length and number of rays for reconstruction  
+- Limited by long wave length and small number of rays for reconstruction  
 - Cracks are reported as cavities  
 
 </div>
@@ -101,7 +101,6 @@ Mendel University in Brno
 # Data in cross section geometry
 
 - Transform resistograph data into 2D cross-section geometry  
-- Visualize the transformed data  
 - Two types of visualization
   - curves
   - color scale
@@ -159,9 +158,8 @@ Mendel University in Brno
 
 - Library for building interactive web apps  
 - Requires minimal code  
-- Provides interactive widgets for user input  
 - Real-time updates  
-- Widely used in data science and machine learning  
+- Widely used in industry and academia
 
 </div>
 
@@ -202,7 +200,7 @@ the preset options in the left panel.
 - Packages app and dependencies into a single container  
 - Ensures consistency across environments  
 - Easy to share and deploy  
-- Widely used in industry and research  
+- Widely used in industry and academia
 
 </div>
 
@@ -221,7 +219,6 @@ docker compose up
 - No Python install required  
 - No dependency issues  
 - Works on Win / Mac / Linux  
-- Just clone repo with `Dockerfile` and `docker-compose.yml`  
 - First run takes minutes, later runs take ms  
 
 </div>
