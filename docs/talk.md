@@ -64,21 +64,22 @@ Mendel University in Brno
 # Content of the talk
 
 - Tomograph and resistograph: strengths and limitations
-- Combined approach: a Python library to merge data from both devices
+- Combined approach: a Python library to merge data 
 - Vibe coding (ChatGPT)
 - Code containerization (Docker)
 
 ---
 
-# Tomograph
+# Acoustic tomograph
 
-- Fast and reliable tool for stem inspection  
+- Tool for fast stem inspection  
 - Provides **global information** across the whole cross section  
+- Green part - high sound speed value - sound wood
 - Shows size and shape of internal defects  
 
 <div class="box-lim">
 
-- Limited by long wave length and small number of rays for reconstruction  
+- Limited by long wavelength and small number of rays for reconstruction  
 - Cracks are reported as cavities  
 
 </div>
@@ -91,6 +92,8 @@ Mendel University in Brno
 
 - Measures the power required for microdrilling at a fixed speed  
 - Provides **local** mechanical properties of the material  
+- Note short(!) valleys: the central cavity hypotheses is not accepted
+- Projection of the data to the stem cross section would reveal details of the defect
 
 ![](resistograph_curves.png)
 
@@ -111,10 +114,10 @@ Mendel University in Brno
 
 # Merge data
 
-- Merge resistograph data with tomograph data  
-- Visualize merged datasets  
-- Long dark part: cavity  
-- Short dark part: crack or small cavity  
+- Resistograph data in a tomogram  
+- The image shows decrease of resistograph value on short distance only
+- The dark strips allow to localize the defect
+- In our case the hypotheses have been confirmed by detailed inspection after felling the tree
 
 ---
 
@@ -128,7 +131,7 @@ Mendel University in Brno
 
 - Python is widely used in scientific data processing  
 - Easy automation, scaling, modification, sharing, and reuse  
-- Simple integration with other tools  
+- Simple [integration](https://robert-marik.github.io/resistograph_meets_tomograph) with other tools  
 
 </div>
 
@@ -142,9 +145,9 @@ Mendel University in Brno
 
 <div class="box-lim">
 
-- No graphical user interface (GUI)  
+- Needs installation of Python ecosystem  
 - Requires programming skills  
-- Needs installation of Python, IDE, and libraries  
+- No graphical user interface
 
 </div>
 
@@ -157,9 +160,9 @@ Mendel University in Brno
 <div class="box-adv">
 
 - Library for building interactive web apps  
-- Requires minimal code  
 - Real-time updates  
 - Widely used in industry and academia
+- Requires minimal code  
 
 </div>
 
@@ -169,8 +172,8 @@ Mendel University in Brno
 
 # Vibe coding
 
-- Programming with large language models  
-- ChatGPT 5 (August 2025)  
+- Code written by AI (LLM)
+- ChatGPT 5 in August 2025
 - Web app produced in two prompts  
 
 ~~~
@@ -193,16 +196,14 @@ the preset options in the left panel.
 
 # Docker
 
-- Containerization platform  
-
 <div class="box-adv">
 
 - Packages app and dependencies into a single container  
-- Ensures consistency across environments  
-- Easy to share and deploy  
+- Ensures consistency across environments  - ideal for **transparent and repeatable data processing**
 - Widely used in industry and academia
 
 </div>
+
 
 ---
 
@@ -216,12 +217,15 @@ docker compose up
 
 <div class="box-adv">
 
+- First run takes minutes, later runs take ms
 - No Python install required  
 - No dependency issues  
 - Works on Win / Mac / Linux  
-- First run takes minutes, later runs take ms  
 
 </div>
+
+- In some fields, it is required to provide the compute capsule to the reviewer (Code Ocean).
+
 
 ---
 
@@ -229,12 +233,13 @@ docker compose up
 
 # Summary
 
-- Resistograph and tomograph are complementary tools for tree stem inspection  
+- Resistograph and tomograph are complementary tools for tree inspection  
 
 <div class="box-adv">
 
-- A Python library was developed to simplify data interpretation  
-- GUI is possible with Streamlit  
+- A Python library was developed to enhance data interpretation  
+- GUI is possible with Streamlit
+- Coding can be done with AI support
 - Installation can be simplified and repeated with Docker  
 
 </div>
