@@ -64,7 +64,7 @@ Mendel University in Brno
 # Content of the talk
 
 - Tomograph and resistograph: strengths and limitations
-- Combined approach: a Python library to merge data 
+- Combined approach: a Python library for simultaneous interpretation 
 - Vibe coding (ChatGPT)
 - Code containerization (Docker)
 
