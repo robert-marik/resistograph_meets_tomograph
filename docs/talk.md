@@ -162,7 +162,7 @@ Mendel University in Brno
 <div class="box-adv">
 
 - Library for building interactive web apps  
-- Real-time updates  
+- GUI in web browser
 - Widely used in industry and academia
 - Requires minimal code  
 
@@ -206,6 +206,8 @@ the preset options in the left panel.
 
 </div>
 
+- In some fields, the "compute capsule" is submitted together with the manuscript (Code Ocean).
+
 
 ---
 
@@ -225,8 +227,6 @@ docker compose up
 - Works on Win / Mac / Linux  
 
 </div>
-
-- In some fields, it is required to provide the compute capsule to the reviewer (Code Ocean).
 
 
 ---
