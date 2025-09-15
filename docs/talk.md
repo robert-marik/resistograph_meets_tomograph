@@ -107,6 +107,8 @@ Mendel University in Brno
 - Two types of visualization
   - curves
   - color scale
+- Written as Python library
+- Published on GitHub
 
 ---
 
@@ -115,7 +117,7 @@ Mendel University in Brno
 # Merge data
 
 - Resistograph data in a tomogram  
-- The image shows decrease of resistograph value on short distance only
+- Increases the accuracy of data interpretation
 - The dark strips allow to localize the defect
 - In our case the hypotheses have been confirmed by detailed inspection after felling the tree
 
